@@ -61,7 +61,7 @@ RUN     DEFAULT_EDITOR_PATH=$(which ${DEFAULT_EDITOR}) \
         && update-alternatives --set editor ${DEFAULT_EDITOR_PATH}
 
 # Project file
-COPY    --chown=root:${GID0_NAME} --chmod=775 server /srv/pastree
+COPY    --chown=root:${GID0_NAME} --chmod=775 src /srv/pastree
 
 # Build project
 RUN     make -C  /srv/pastree \
