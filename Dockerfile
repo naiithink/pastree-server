@@ -42,7 +42,10 @@ RUN     addgroup --gid ${GID0} ${GID0_NAME} \
         && adduser --uid ${UID2} --gid ${GID0} --gecos "${UID2_GECOS}" ${UID2_NAME} \
         && echo "${UID2_NAME}:${UID2_PWD}" | chpasswd \
         && apt-get install ${APTGET_OPTS} sudo \
-        && echo "${GID0_NAME} ALL=(ALL) ALL" >> /etc/sudoers
+        && echo "root ALL=(ALL) ALL" >> /etc/sudoers \
+        && echo "${UID0_NAME} ALL=(ALL) ALL" >> /etc/sudoers \
+        && echo "${UID1_NAME} ALL=(ALL) ALL" >> /etc/sudoers \
+        && echo "${UID2_NAME} ALL=(ALL) ALL" >> /etc/sudoers
 
 # Essential packages
 RUN     apt-get install ${APTGET_OPTS} build-essential clang emacs-nox git network-manager vim
@@ -69,8 +72,9 @@ RUN     git clone --recurse-submodules ${LIBDXP_GIT_REMOTE_URL} ${LIBDXP_PATH} \
         && cd ${LIBDXP_PATH} \
         && git checkout ${LIBDXP_GIT_REF} \
         && make \
-        && ln -s ./lib/* ${LIBDXP_PREFIX} \
-        && ln -s ./include ${LIBDXP_PREFIX}/include
+        && mkdir -p ${LIBDXP_PREFIX}/include \
+        && ln -s ${LIBDXP_PATH}/lib/* ${LIBDXP_PREFIX}/lib \
+        && ln -s ${LIBDXP_PATH}/include/* ${LIBDXP_PREFIX}/include
 
 # Project file
 COPY    --chown=root:${GID0_NAME} --chmod=775 src /srv/pastree
